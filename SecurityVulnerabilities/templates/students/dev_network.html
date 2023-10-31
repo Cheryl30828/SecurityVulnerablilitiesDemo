@@ -1,0 +1,210 @@
+{% extends "base.html" %}
+{% block title %}Dev Network{% endblock %}
+{% block content%}
+{% load filter %}
+<a href="{% url 'Devtools' %}" class="btn" style="background-color: #575656ba;color:white;position:  absolute;left: 25px;">回上一頁</a>
+<div class="row">
+    <div class="col-9">
+        <h1>Network</h1>
+    </div>
+    <div class="col-3" style="text-align: center;background-color: #e3e3e381;width: 20%;height: 130px;border-radius: 15px; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;margin: 0px 30px;">
+        {% if missions_complete_count == missions_info|length %}
+        <h2 style="margin: 15px;">Mission</h2>
+        <span class="badge bg-success" style="margin: 0px 0px 15px;font-size: 22px;">
+            Complete {{ missions_complete_count }}/{{ missions_info|length }}
+        </span>
+        {% else %}
+        <h2 style="margin: 15px;">Mission</h2>
+        <span class="badge bg-danger" style="margin: 0px 0px 15px;font-size: 22px;">
+            InComplete {{ missions_complete_count }}/{{ missions_info|length }}
+        </span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card" style="margin: 20px 0px;">
+    <div class="card-body"> 
+        <h3>Network面板概述</h3><br>
+        <p>Network面板會展示所有網路請求詳細訊息的紀錄，包括狀態、資源類型、大小、所需時間、Request<br>和Response等等，明確定位出哪些請求比預期耗時並加以調整是優化網頁的關鍵步驟。</p>
+    
+        <h4>Network面板區分為5大區塊</h4><br>
+    
+        <h4>1. Controls – 控制Network的外觀和功能</h4><br>
+        <ul>
+            <li>Record Network Log: 紅色代表正在紀錄請求</li>
+            <li>Clear: 清空所有資源的請求</li>
+            <li>Capture Screenshots: 在頁面載入時擷取不同時間點的螢幕畫面</li>
+            <li>Filter: 根據屬性過濾</li>
+            <li>Use small resource raws: 顯示內容精簡</li>
+            <li>Preserve Log: 當頁面過載或者頁面跳轉時，保留之前頁面的網路請求資料</li>
+            <li>Disable cache: 不允許緩存時，所有資源均重新加載，DevTools 就不會提供任何來自快取的資源</li>
+        </ul>
+    
+        <h4>2. Filters – 控制 Requests Table 顯示的內容，可多選，按住Cmd（Windows： CtrI）</h4><br>
+    
+        <h4>3. Overview – 顯示資料獲取的時間軸，可根據時間過濾</h4><br>
+    
+        <h4>4. Requests - Table按照資料獲取的先後順序檢視請求記錄</h4><br>
+        <ul>
+            <li>Name: 檔案的名字或者資源的識別符號，點擊後可查看更進一步的紀錄（包括Headers、Preview、Response、Cookies、Timing）</li>
+            <li>Status: HTTP狀態碼</li>
+            <li>Type: 請求資源的MIME型別</li>
+            <li>Initiator: 標記請求是由某一對象發起</li>
+            <li>Size: 請求的資源大小</li>
+            <li>Time: 總持續時間，從發起請求到資源下載完成</li>
+            <li>Waterfall: 每一個請求活動不同階段的可視化瀑布流</li>
+        </ul><br>
+    
+        <h4>5. Summary - 顯示總共的請求數、數據傳輸量、加載時間訊息</h4><br>
+        <img src = "https://www.astralweb.com.tw/wp-content/uploads/2017/12/chrome-devtools-developer-tools-2.png" width = 70%><br><br>
+        <h4>檢視載入事件</h4><br>
+        <img src = "https://www.astralweb.com.tw/wp-content/uploads/2017/12/chrome-devtools-developer-tools-3.png" width = 70%><br><br>
+        <p>DOMContentLoaded事件在Overview和Requests Table對應藍線，並且在Summary以藍色文字顯示確切時間，而Load事件對應紅色。</p><br>
+    
+        <h4>檢視請求的發起物件和依賴物件</h4><br>
+        <p>滑鼠移至Requests Table的其中一個請求，按住Shift鍵，可以查看该資源是由哪個對象或過程發起的（發起<br>物件）和對該資源的請求過程中引發了哪些資源（依賴物件）。如果B請求是由A請求發起則A是B的發起物<br>件，B是A的依賴物件（B依賴A）。</p><br>
+        <img src="https://www.astralweb.com.tw/wp-content/uploads/2017/12/chrome-devtools-developer-tools-1.png" width = 70%><br>
+        
+
+        <p>reference : <a href="https://www.astralweb.com.tw/chrome-devtools-developer-tools-network/">Chrome Devtools 開發者工具功能介紹(network篇)</a>、<a href="https://developer.chrome.com/docs/devtools/network/">Inspect network activity</a></p>
+        
+    </div>
+</div>
+
+<div class="card" style="margin: 20px 0px;">
+    <div class="card-body">
+        <h3 class="card-title">Mission</h3>
+        <hr>
+        {% for mission_info in missions_info %}
+        <ul>
+            <li>
+                <h5>{{ mission_info.mission.title }}</h4>
+                    <hr>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row" style="align-items: center;">
+                                <h5 class="card-title col-1" style="display: inline;">任務{{ forloop.counter }}</h5>
+                                <div class="col-11">
+                                    <div style="width: 110px;display: inline-block;text-align: center;">
+                                        {% if mission_info.is_completed %}
+                                        <span class="badge bg-success">
+                                            <h6 style="margin: 0;">Complete</h6>
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-danger">
+                                            <h6 style="margin: 0;">Incomplete</h6>
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    <div style="width: 110px;display: inline-block;">
+                                        <span class="badge text-bg-info" style="font-size: 16px;">嘗試次數:{{mission_info.attempts }}</span>
+                                    </div>
+                                    <div style="width: 185px;display: inline-block;">
+                                        <span class="badge text-bg-warning" style="font-size: 16px;">最後提交:{{mission_info.last_attempt|formatTime }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="card-text">{{ mission_info.mission.description }}</p>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#{{ mission_info.mission.alias }}">
+                                點我挑戰
+                            </button>
+                        </div>
+                    </div>
+            </li>
+        </ul>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- modal視窗 -->
+{% include 'modal_template.html' %}
+<!-- AjaxJsonResponse -->
+<div class="modal fade" id="AjaxJsonResponse" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="AjaxJsonResponseLabel"><strong>任務1</strong><br>檢視API、AJAX網頁請求回應的詳細資訊</h4>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div style="margin: 0px 5px;">
+                        <p>請使用Chrome DevTools的Network功能，查出回傳的天氣資訊</p>
+                        <p>hint: 有些字被編碼了可以<a href="https://toolbox.googleapps.com/apps/encode_decode/" target="_blank">前往解碼</a>，選擇UTF16解碼</p>
+                        <br>
+                        <br>
+                        <strong>目標:請輸入大安區2023/10/22 12:00-18:00的降雨機率</strong>
+                        <br>
+                        <br>
+                        <button class="btn btn-primary" id="getAjaxResponse-btn">發送請求</button>
+                    </div>
+                    <div style="margin-top: 5%;">
+                        <label>答案：</label>&emsp;
+                        <input type="text" name="answer" class="form-control"
+                            style="width: 60%;display: inline;" placeholder="請輸入純數字，單位為% ex.20">
+                        <input type="hidden" name="question" value="AjaxJsonResponse">
+                        <input type="hidden" name="mission_id" value="3">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">離開</button>
+                    <button type="button" class="btn btn-success" id="submit-btn">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        // 發送請求按鈕事件
+        $("#getAjaxResponse-btn").click(function () {
+            event.preventDefault();
+            getAjaxResponse();
+        });
+
+        // 提交按鈕事件
+        $("#submit-btn").click(function () {
+            event.preventDefault();
+            checkAnswer();
+        });
+
+        // 取得Ajax回應
+        function getAjaxResponse() {
+            $.ajax({
+                url: "{% url 'AjaxJsonResponse' %}",
+                type: "POST",
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        // 檢查答案
+        function checkAnswer() {
+            var data = {
+                input: $("input[name='answer']").val(),
+                answer: 10,
+                question: $("input[name='question']").val(),
+                mission_id: $("input[name='mission_id']").val(),
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+            };
+            AjaxCheckAnswer(data, function (response) {
+                $("#AjaxJsonResponse").modal("hide");
+                var mission = $("#AjaxJsonResponseLabel").text();
+                if (response.isCorrect) {
+                    alertMissionComplete(mission);
+                } else {
+                    alertMissionFail(mission);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

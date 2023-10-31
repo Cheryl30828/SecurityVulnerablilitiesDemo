@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}新增{% endblock %}
+{% block content%}
+<h2>學生資料維護</h2>
+<form action="" method="post">
+  {% csrf_token %}
+  <div class="form">
+    <div class="row">
+      <div class="text col-sm-6">
+        <label for="username">{{ form.username.label }}</label>
+        {{ form.username }}
+      </div>
+      <div class="text col-sm-6">
+        <label for="gender">{{ form.gender.label }}</label>
+        {{ form.gender }}
+      </div>
+    </div>
+    <div class="row">
+      <div class="text col-sm-6">
+        <label for="email">{{ form.studentId.label }}</label>
+        {{ form.studentId }}
+      </div>
+      <div class="text col-sm-6">
+        <label for="birth_date">{{ form.birth_date.label }}</label>
+        {{ form.birth_date }}
+      </div>
+    </div>
+    <div class="text">
+      <label for="phone_number">{{ form.phone_number.label }}</label>
+      {{ form.phone_number }}
+    </div>
+    <div class="text">
+      <label for="email">{{ form.email.label }}</label>
+      {{ form.email }}
+    </div>
+    <div class="button">
+      <input type="submit" class="btn btn-success" value="存檔">
+    </div>
+
+  </div>
+</form>
+
+<!-- modal視窗 -->
+{% include 'modal_template.html' %}
+
+<script>
+  $(document).ready(function () {
+    var BrokenAccessControl_hacked = "{{ BrokenAccessControl_hacked }}";
+    if (BrokenAccessControl_hacked == "True") {
+      alertMissionComplete("Broken Access Control");
+    }
+  });
+</script>
+{% endblock %}

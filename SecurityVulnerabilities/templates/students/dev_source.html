@@ -1,0 +1,207 @@
+{% extends "base.html" %}
+{% block title %}Dev Source{% endblock %}
+{% block content%}
+{% load filter %}
+<a href="{% url 'Devtools' %}" class="btn" style="background-color: #575656ba;color:white;position:  absolute;left: 25px;">回上一頁</a>
+<div class="row">
+    <div class="col-9">
+        <h1>Source</h1>
+    </div>
+    <div class="col-3" style="text-align: center;background-color: #e3e3e381;width: 20%;height: 130px;border-radius: 15px; box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;margin: 0px 30px;">
+        {% if missions_complete_count == missions_info|length %}
+        <h2 style="margin: 15px;">Mission</h2>
+        <span class="badge bg-success" style="margin: 0px 0px 15px;font-size: 22px;">
+            Complete {{ missions_complete_count }}/{{ missions_info|length }}
+        </span>
+        {% else %}
+        <h2 style="margin: 15px;">Mission</h2>
+        <span class="badge bg-danger" style="margin: 0px 0px 15px;font-size: 22px;">
+            InComplete {{ missions_complete_count }}/{{ missions_info|length }}
+        </span>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card" style="margin: 20px 0px;">
+    <div class="card-body">
+
+        <h2>Chrome Devtools 開發者工具功能介紹-source</h2>
+        <h3>Debug 流程</h3>
+        <ol>
+            <li>發現（重現）Bug</li>
+            <li>利用 Source 選擇要中斷的事件</li>
+            <p>輸入快捷鍵Cmd + Option + I (Windows： Ctrl + Shift + I)，右手邊即出現控制台的
+    
+                source版面 -> 展開 Event Listener Breakpoints -> 點擊 Mouse，選取 click -> 回到 Demo
+     
+     畫面，再次點擊 Add 按紐，此時 Devtools 會暫停執行，停止在 function onClick() 。</p>
+            <li>檢查原始碼</li>
+            <ul>
+                <li> Resume script execution鍵：繼續執行程式碼，直到遇到另一個斷點。</li>
+                <li>Step over鍵 ：執行程式碼的下一步，若遇到函式會視函式為一個完整的步驟，將函式執行完才停止</li>
+                <li>Step into鍵 ：執行程式碼的下一步，遇到函式就進入並且繼續單步執行</li>
+                <li>Step out鍵 ：跳出函式</li>
+                <li>Deactivate breakpoints鍵 ：切換斷點啟用或禁用狀態</li>
+            </ul>
+        </ol>
+        <h3>設定斷點（breakpoint）</h3>
+        <p>當懷疑某一函式 （ updateLabel() ）中的程式碼有問題時，點擊行號（ 32 ）設置斷點，
+    
+            程式碼會在執行到這一行時中斷，並出現相關訊息。</p>
+        <img src="https://www.astralweb.com.tw/wp-content/uploads/2017/12/Chrome-Devtools-3.png" alt="">
+        <h3>利用 watch 輸出某變項或 expression 監控變項的變化，再使用 console 版面確認問題</h3>
+        <p>展開 Watch -> 點擊 ＋ Add expression （初次展開是空的）-> 輸入 typeof sum，會回傳
+    
+            Typeof sum: “string”   
+            
+            ＊這驗證了我們所想 sum 的值為字串非數字</p>
+        <img src="https://www.astralweb.com.tw/wp-content/uploads/2017/12/Chrome-Devtools-4.png" alt="">
+        <p>開啟 console 版面 -> 輸入 parseInt(addend1) + parseInt(addend2)，回傳 7 ＊正確</p>
+        <img src="https://www.astralweb.com.tw/wp-content/uploads/2017/12/Chrome-Devtools-1.png" alt="">
+    
+        <h3>修復 Bug</h3>
+        <p>回到 Source 版面 將程式碼 var sum = addend1 + addend2
+    
+            修改為 var sum = parseInt(addend1) + parseInt(addend2);
+            <br>
+            -> 修改完成後，保存變動 Command + S 、 Window : Control + S </p>
+        
+        <h3>取消斷點，再次執行，確定錯誤是否修正</h3>
+        <p>點擊  Deactivate breakpoints 鍵取消所有設置的斷點
+            <br>
+            -> 點擊  Resume script execution 鍵，輸入不同的數值試試看結果應該顯示正常的數值喔！</p>
+
+
+        <p>reference : <a href="https://www.astralweb.com.tw/chrome-devtools-developer-tools-source/">Chrome Devtools 開發者工具功能介紹-source</a>、<a href="https://developer.chrome.com/docs/devtools/sources/">Sources panel overview</a></p>
+    </div>
+</div>
+
+<div class="card" style="margin: 20px 0px;">
+    <div class="card-body">
+        <h3 class="card-title">Mission</h3>
+        <hr>
+        {% for mission_info in missions_info %}
+        <ul>
+            <li>
+                <h5>{{ mission_info.mission.title }}</h4>
+                    <hr>
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row" style="align-items: center;">
+                                <h5 class="card-title col-1" style="display: inline;">任務{{ forloop.counter }}</h5>
+                                <div class="col-11">
+                                    <div style="width: 110px;display: inline-block;text-align: center;">
+                                        {% if mission_info.is_completed %}
+                                        <span class="badge bg-success">
+                                            <h6 style="margin: 0;">Complete</h6>
+                                        </span>
+                                        {% else %}
+                                        <span class="badge bg-danger">
+                                            <h6 style="margin: 0;">Incomplete</h6>
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    <div style="width: 110px;display: inline-block;">
+                                        <span class="badge text-bg-info" style="font-size: 16px;">嘗試次數:{{mission_info.attempts }}</span>
+                                    </div>
+                                    <div style="width: 185px;display: inline-block;">
+                                        <span class="badge text-bg-warning" style="font-size: 16px;">最後提交:{{mission_info.last_attempt|formatTime }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="card-text">{{ mission_info.mission.description }}</p>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#{{ mission_info.mission.alias }}">
+                                點我挑戰
+                            </button>
+                        </div>
+                    </div>
+            </li>
+        </ul>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- modal視窗 -->
+{% include 'modal_template.html' %}
+<!-- ObserveVarChange -->
+<div class="modal fade" id="ObserveVarChange" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+    tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="ObserveVarChangeLabel"><strong>任務1</strong><br>利用debugger逐行觀察變化</h4>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div style="margin: 0px 5px;">
+                        <p>請使用Chrome DevTools的Source功能，逐行觀察變化</p>
+
+                        <strong>目標:請輸入執行隱藏函式(getAnswer)中回傳值為243時n=?</strong>
+                    </div>
+                    <div style="margin-top: 5%;">
+                        <label>答案：</label>&emsp;
+                        <input type="text" name="answer" class="form-control" style="width: 60%;display: inline;"
+                            placeholder="請輸入n=?的回傳值為243">
+                        <input type="hidden" name="question" value="ObserveVarChange">
+                        <input type="hidden" name="mission_id" value="4">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">離開</button>
+                    <button type="button" class="btn btn-success" id="submit-btn">提交</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    // 隱藏的答案
+    function getAnswer() {
+        debugger;
+        var n = 10;
+        var ansewer = power_of_three(n);
+    }
+
+    function power_of_three(n) {
+        if (n === 0) {
+            return 1;
+        } else {
+            return 3 * power_of_three(n - 1);
+        }
+    }
+
+    $(document).ready(function () {
+        // 提交按鈕事件
+        $("#submit-btn").click(function () {
+            event.preventDefault();
+            checkAnswer();
+        });
+
+        // 檢查答案
+        function checkAnswer() {
+            var data = {
+                input: $("input[name='answer']").val(),
+                answer: 5,
+                question: $("input[name='question']").val(),
+                mission_id: $("input[name='mission_id']").val(),
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+            };
+            AjaxCheckAnswer(data, function (response) {
+                $("#ObserveVarChange").modal("hide");
+                var mission = $("#ObserveVarChangeLabel").text();
+                if (response.isCorrect) {
+                    alertMissionComplete(mission);
+                } else {
+                    alertMissionFail(mission);
+                }
+            });
+        }
+
+
+    });
+</script>
+{% endblock %}

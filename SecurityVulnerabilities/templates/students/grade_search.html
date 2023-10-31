@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}查詢{% endblock %} 
+{% block content%}
+<h2>學生歷年成績查詢</h2>
+<form action="" method="post">
+  {% csrf_token %}
+  <div class="form">
+    <div class="row">
+        <div class="text col-sm-6">
+          <label for="name">{{ form.name.label }}</label>
+          {{ form.name }}
+        </div>
+        <div class="text col-sm-6">
+          <label for="studentId">{{ form.studentId.label }}</label>
+          {{ form.studentId }}
+        </div>
+    </div>
+    
+    <div class="text">
+      <label for="register_year">{{ form.semester.label }}</label>
+      {{ form.semester }}
+    </div>
+    <div class="text">
+      <label for="subject">{{ form.subject.label }}</label>
+      {{ form.subject }}
+    </div>
+  <div class="button">
+    <input type="submit" class="btn btn-success" value="查詢">
+  </div>
+  </div>
+</form>
+
+<table class="table table-striped" style="margin-top:20px">
+    <thead>
+        <tr>
+            <th>Semester</th>
+            <th>Student</th>
+            <th>Subject</th>
+            <th>Grade</th>
+        </tr>
+    </thead>
+    <tbody>
+      {% if noResult %}
+        <tr>
+            <td colspan="4" style="text-align: center;">查無資料</td>
+        </tr>
+      {% else %}
+        {% for result in results %}
+          <tr>
+              <td>{{ result.semester }}</td>
+              <td>{{ result.studentId }} - {{ result.username }}</td>
+              <td>{{ result.subject }}</td>
+              <td>{{ result.grade }}</td>
+          </tr>
+        {% endfor %}
+      {% endif %}
+    </tbody>
+</table>
+
+<!-- modal視窗 -->
+{% include 'modal_template.html' %}
+
+<script>
+  $(document).ready(function() {
+    var SQLInjection_hacked = "{{ SQLInjection_hacked }}"
+    if(SQLInjection_hacked == "True"){
+      alertMissionComplete("任務1SQL Injection");
+    }else if(SQLInjection_hacked == "False"){
+      alertMissionFail("任務1SQL Injection");
+    }
+  });
+</script>
+{% endblock %}

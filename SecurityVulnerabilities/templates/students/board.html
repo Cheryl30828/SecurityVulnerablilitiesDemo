@@ -1,0 +1,57 @@
+{% extends "Base.html" %}
+{% block title %}留言板{% endblock %}
+{% block content %}
+{% load filter %}
+
+<h1>留言板</h1>
+<hr>
+<div style="background-color: #ededed;border-radius: 5px;padding: 10px 0px;margin: 25px 0px;">
+    <form method="POST" style="padding: 0;margin:10px ;display: flex;" >
+        <div class="col-md-11" style="text-align: center;">
+            {% csrf_token %}
+            <div class="form-group">
+                <input type="text" class="form-control" name="content" placeholder="發表留言..."></input>
+            </div>
+        </div>
+        <div class="col-md-1" style="text-align: center;">
+            <button type="submit" class="btn btn-primary" style="width: 70%;">留言</button>
+        </div>
+    </form>
+</div>
+{% for board in boards%}
+<div class="card">
+    <div class="card-header">
+        <div class="row">
+            <div class="col-md-10">{{ board.author.username }}</div>
+        <div class="col-md-2" style="text-align: right;">{% if board.created_at|timeSince < 60 %}
+            <span class="badge bg-warning text-dark">{{ board.created_at|timeSince }} 分鐘前</span><br>
+        {% elif board.created_at|timeSince < 1440 %}
+        <span class="badge bg-warning text-dark">{% widthratio board.created_at|timeSince 60 1 %} 小時前</span><br>
+        {% else %}
+            <span class="badge bg-warning text-dark">{% widthratio board.created_at|timeSince 1440 1 %} 天前</span><br>
+        {% endif %}</div>
+        </div>
+        
+    </div>
+    <div class="card-body">
+        <p class="card-text">{{ board.content|safe }}</p>
+    </div>
+</div>
+<br>
+{% endfor %}
+
+<!-- modal視窗 -->
+{% include 'modal_template.html' %}
+
+<script>
+    $(document).ready(function () {
+        // StoredXSSXSS 從後端判斷是否成功
+        var StoredXSS_hacked = "{{ StoredXSS_hacked }}";
+        if (StoredXSS_hacked == "True") {
+            alertMissionComplete("任務3儲存型XSS");
+        }else if(StoredXSS_hacked == "False"){
+            alertMissionFail("任務3儲存型XSS");
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,91 @@
+{% load static %}
+<!-- 答對視窗 -->
+<div class="modal fade" id="correct-info" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="correctModalLabel"><img src="{% static 'images/correct.png' %}" width="25px" height="25px">&emsp;恭喜</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 答錯視窗 -->
+<div class="modal fade" id="wrong-info" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="wrongModalLabel"><img src="{% static 'images/error.png' %}" width="25px" height="25px">&emsp;失敗</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // 任務完成Modal彈窗
+    function alertMissionComplete(mission) {
+        const correctModal = new bootstrap.Modal($('#correct-info'));
+        $("#correct-info .modal-body").html("<p>【" + mission + "】任務完成</p>");
+        $("#correct-info").modal("show");
+    }
+
+    // 任務失敗Modal彈窗
+    function alertMissionFail(mission) {
+        const wrongModal = new bootstrap.Modal($('#wrong-info'));
+        $("#wrong-info .modal-body").html("<p>【" + mission + "】任務失敗</p>");
+        $("#wrong-info").modal("show");
+    }
+
+    // 核對答案
+    function AjaxCheckAnswer(data, successCallback) {
+        $.ajax({
+            url: "{% url 'CheckAnswer' %}",
+            type: "POST",
+            data: data,
+            success: successCallback,
+        });
+    }
+
+    $("#correct-info").on('hide.bs.modal', function(){
+        var path = window.location.pathname;
+        if(window.location.href.split('?')[1]){
+            // 如果任務成功且網址有參數，則重新導向無參數的網址
+            window.location = window.location.href.split('?')[0];
+            return;
+        }
+        if(path == '/board/'){
+            window.location = '/xss/';
+            return;
+        }else if(path == '/grade_search/'){
+            window.location = '/sql_injection/';
+            return;
+        }else if(path == '/student_maintenance/1/'){
+            window.location = '/broken_access_control/';
+            return;
+        }
+
+        window.location.reload();
+    });
+    $("#wrong-info").on('hide.bs.modal', function(){
+        var path = window.location.pathname;
+        if(window.location.href.split('?')[1]){      
+            return;
+        }
+        if(path == '/board/' || path == '/grade_search/'){
+            return;
+        }
+        window.location.reload();
+    });
+</script>
